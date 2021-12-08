@@ -1,0 +1,210 @@
+openapi: "3.0.2"
+info:
+  title: Account API
+  description: This service exposes the api of account.
+  version: '2021.1.0'
+  x-api-id: api-v0001
+  x-audience: ericboutique-internal
+servers:
+  - url: '{server}'
+paths:
+  /no-auth/account:
+    post:
+      summary: Create an account
+      description: The api is used for creating a new account.
+      operationId: createAccount
+      tags:
+        - Account
+      requestBody:
+        $ref: '#/components/requestBodies/Account'
+      responses:
+        '201':
+          $ref: '#/components/responses/AccountId'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '500':
+          $ref: '#/components/responses/Problem'
+        '501':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /account/{account-id}:
+    put:
+      summary: Update an account
+      description: The api is used for updating an existing account.
+      operationId: updateAccount
+      tags:
+        - Account
+      requestBody:
+        $ref: '#/components/requestBodies/AccountData'
+      parameters:
+        - $ref: "#/components/parameters/AccountIdPathParam"
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateResult'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '500':
+          $ref: '#/components/responses/Problem'
+        '501':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+
+
+components:
+
+  headers:
+    X-Supported-Versions:
+      description: A comma separated list of API versions supported by this resource method, referencing the "api-version" in the Content-Type.
+      schema:
+        type: string
+      example: '2020.1.0'
+
+  requestBodies:
+
+    Account:
+      description: An object containing the details of an account.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Account'
+
+    AccountData:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AccountData'
+
+  responses:
+
+    AccountId:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AccountId'
+
+    UpdateResult:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateResult'
+
+    Problem:
+      description: A generic problem response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+
+  parameters:
+    AccountIdPathParam:
+      name: account-id
+      in: path
+      description: The identification of an account.
+      required: true
+      schema:
+        $ref: '#/components/schemas/AccountId'
+
+  schemas:
+
+    Problem:
+      description: A generic problem response describing a client or server problem.
+      required:
+        - title
+        - status
+        - detail
+      properties:
+        title:
+          description: A summary of the problem.
+          type: string
+          example: Service Unavailable
+        status:
+          description: The HTTP status code.
+          type: integer
+          format: int32
+          minimum: 100
+          maximum: 600
+          exclusiveMaximum: true
+          example: 503
+        detail:
+          description: A detail of problem.
+          type: string
+          example: Connection time out
+
+    Account:
+      description: An object which contains details about a Account.
+      required:
+        - userName
+        - password
+      properties:
+        userName:
+          description: The name of user will be created.
+          example: 'customer@gmail.com'
+          type: string
+        password:
+          description: The password.
+          example: 'abc123'
+          type: string
+        roles:
+          example: '["ROLE_CUSTOMER","ROLE_EMPLOYEE"]'
+          type : array
+          items :
+            $ref: '#/components/schemas/Role'
+
+    Role:
+      description: Role of user.
+      enum:
+        - ROLE_CUSTOMER
+        - ROLE_EMPLOYEE
+        - ROLE_ADMIN
+
+    AccountId:
+      description: The identification of an account.
+      required:
+        - id
+      properties:
+        id:
+          description: The value of identification.
+          example: 123
+          type: integer
+          format: int64
+
+    AccountData:
+      description: The data of an account will be updated.
+      required:
+        - roles
+      properties:
+        roles:
+          example: '["ROLE_CUSTOMER","ROLE_EMPLOYEE"]'
+          type : array
+          items :
+            $ref: '#/components/schemas/Role'
+
+    UpdateResult:
+      description: The result of updating.
+      required:
+        - result
+      properties:
+        result:
+          description: The value of result.
+          example: true
+          type: boolean
