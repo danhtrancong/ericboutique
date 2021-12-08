@@ -17,6 +17,11 @@ public class CommonUtility {
         return new BCryptPasswordEncoder();
     }
 
+//    Method thứ 2 là public BCryptPasswordEncoder passwordEncoder()
+//    Method này dùng để mã hoá password của người dùng
+//    Ví dụ người dùng nhập password là abc@123 thì nó sẽ mã hoá là $2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu.
+//    Mọi người có thể đọc cách encode và thư viện encode ở file EncrytedPasswordUtils trong github .
+
     public Function<String, Problem> createProblem = errorMessage -> {
         Problem problem = new Problem();
         problem.setDetail(errorMessage);

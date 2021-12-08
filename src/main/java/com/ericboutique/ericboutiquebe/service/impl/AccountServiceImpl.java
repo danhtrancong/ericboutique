@@ -1,12 +1,17 @@
 package com.ericboutique.ericboutiquebe.service.impl;
 
+import com.ericboutique.ericboutiquebe.entity.Authority;
 import com.ericboutique.ericboutiquebe.entity.UserEntity;
+import com.ericboutique.ericboutiquebe.enumeration.AuthorityName;
 import com.ericboutique.ericboutiquebe.factory.CommonUtility;
+import com.ericboutique.ericboutiquebe.factory.mapper.AccountMapper;
+import com.ericboutique.ericboutiquebe.model.Account;
 import com.ericboutique.ericboutiquebe.repository.AuthorityRepository;
 import com.ericboutique.ericboutiquebe.repository.UserRepository;
 import com.ericboutique.ericboutiquebe.service.AccountService;
-import com.erosboutique.erosboutiquebe.dto.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public class AccountServiceImpl implements AccountService {
     @Autowired
@@ -19,11 +24,19 @@ public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
 
     @Override
-    public Long create(Account account) {
+    public Long create(com.ericboutique.ericboutiquebe.model.Account account) {
+        UserEntity userEntity = AccountMapper.mapToEntity.apply(account);
 
-        UserEntity userEntity = Account
+        List<Authority> authorities = authorityRepository.findByName(AuthorityName.ROLE_CUSTOMER);
+        if(authorities.isEmpty()){
+            throw  new IllegalArgumentException(String.format("The role [%s] not found", AuthorityName.ROLE_CUSTOMER.name()));
 
-        return 1;
+        }
+        userEntity.setAuthorities(authorities);
+        String encodedPassword = commonUtility.passwordEncoder().encode(account.getPassword());
+        userEntity.setPassword(encodedPassword);
+        UserEntity createdUser = userRepository.save(userEntity);
+                return createdUser.getId();
 
     }
 

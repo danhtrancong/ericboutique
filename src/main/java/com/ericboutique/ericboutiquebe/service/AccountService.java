@@ -1,6 +1,7 @@
 package com.ericboutique.ericboutiquebe.service;
 
-import com.erosboutique.erosboutiquebe.dto.Account;
+
+import com.ericboutique.ericboutiquebe.model.Account;
 
 public interface AccountService {
     Long create(Account account);

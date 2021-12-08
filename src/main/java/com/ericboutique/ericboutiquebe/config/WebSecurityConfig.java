@@ -76,6 +76,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .addFilterBefore(new AuthenticationFilter(userDetailsService, tokenHelper), UsernamePasswordAuthenticationFilter.class);
 
         http.csrf().disable();
+        //CSRF ( Cross Site Request Forgery) là kĩ thuật tấn công bằng cách sử dụng quyền chứng thực của người sử dụng đối với 1 website khác
+
+
     }
 
     @Override
